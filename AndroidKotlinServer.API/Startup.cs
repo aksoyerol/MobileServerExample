@@ -1,4 +1,5 @@
 using AndroidKotlinServer.API.Models;
+using AndroidKotlinServer.Shared.Extensions;
 using Microsoft.AspNet.OData.Builder;
 using Microsoft.AspNet.OData.Extensions;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -59,7 +60,7 @@ namespace AndroidKotlinServer.API
                 //app.UseSwagger();
                 //app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "AndroidKotlinServer.API v1"));
             }
-
+            app.UseCustomException();
             app.UseRouting();
             app.UseAuthentication();
             app.UseAuthorization();

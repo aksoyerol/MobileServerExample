@@ -1,3 +1,4 @@
+using AndroidKotlinServer.Shared.Extensions;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -50,7 +51,7 @@ namespace AndroidKotlinServer.Photo.API
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "AndroidKotlinServer.Photo.API v1"));
             }
-
+            app.UseCustomException();
             app.UseRouting();
             app.UseAuthentication();
             app.UseAuthorization();
