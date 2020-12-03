@@ -1,11 +1,7 @@
-using AndroidKotlinServer.API.Models;
-using Microsoft.AspNet.OData.Builder;
-using Microsoft.AspNet.OData.Extensions;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -16,7 +12,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace AndroidKotlinServer.API
+namespace AndroidKotlinServer.Photo.API
 {
     public class Startup
     {
@@ -30,48 +26,37 @@ namespace AndroidKotlinServer.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<AppDbContext>(options =>
-            {
-                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
-            });
 
+            services.AddControllers();
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
             {
                 options.Authority = "http://localhost:5001";
-                options.Audience = "resource_product_api";
+                options.Audience = "resource_photo_api";
                 options.RequireHttpsMetadata = false;
             });
-
-            services.AddOData();
-            services.AddControllers();
-            //services.AddSwaggerGen(c =>
-            //{
-            //    c.SwaggerDoc("v1", new OpenApiInfo { Title = "AndroidKotlinServer.API", Version = "v1" });
-            //});
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "AndroidKotlinServer.Photo.API", Version = "v1" });
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            app.UseStaticFiles();
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                //app.UseSwagger();
-                //app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "AndroidKotlinServer.API v1"));
+                app.UseSwagger();
+                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "AndroidKotlinServer.Photo.API v1"));
             }
 
             app.UseRouting();
             app.UseAuthentication();
             app.UseAuthorization();
-            var builder = new ODataConventionModelBuilder();
-            builder.EntitySet<Product>("Products");
-            builder.EntitySet<Category>("Categories");
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.Select().Expand().OrderBy().Count().Filter();
-                //odata/products
-                endpoints.MapODataRoute("odata", "odata",builder.GetEdmModel());
                 endpoints.MapControllers();
             });
         }

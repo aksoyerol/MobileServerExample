@@ -1,5 +1,6 @@
 ﻿using AndroidKotlinServer.API.Models;
 using Microsoft.AspNet.OData;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -9,6 +10,7 @@ using System.Threading.Tasks;
 
 namespace AndroidKotlinServer.API.Controllers
 {
+    [Authorize]
     public class CategoriesController : ODataController
     {
         private readonly AppDbContext _appDbContext;
