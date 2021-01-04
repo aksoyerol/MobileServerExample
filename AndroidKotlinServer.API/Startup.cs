@@ -1,5 +1,7 @@
+using AndroidKotlinServer.API.Filters;
 using AndroidKotlinServer.API.Models;
 using AndroidKotlinServer.Shared.Extensions;
+using FluentValidation.AspNetCore;
 using Microsoft.AspNet.OData.Builder;
 using Microsoft.AspNet.OData.Extensions;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -44,7 +46,10 @@ namespace AndroidKotlinServer.API
             });
 
             services.AddOData();
-            services.AddControllers();
+            services.AddControllers(options =>
+            {
+                options.Filters.Add<ValidateModelAttribute>();
+            }).AddFluentValidation(options => options.RegisterValidatorsFromAssemblyContaining<Startup>());
             //services.AddSwaggerGen(c =>
             //{
             //    c.SwaggerDoc("v1", new OpenApiInfo { Title = "AndroidKotlinServer.API", Version = "v1" });
@@ -56,6 +61,7 @@ namespace AndroidKotlinServer.API
         {
             if (env.IsDevelopment())
             {
+                app.UseDelayRequestDevelopment();
                 app.UseDeveloperExceptionPage();
                 //app.UseSwagger();
                 //app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "AndroidKotlinServer.API v1"));
@@ -72,7 +78,7 @@ namespace AndroidKotlinServer.API
             {
                 endpoints.Select().Expand().OrderBy().Count().Filter();
                 //odata/products
-                endpoints.MapODataRoute("odata", "odata",builder.GetEdmModel());
+                endpoints.MapODataRoute("odata", "odata", builder.GetEdmModel());
                 endpoints.MapControllers();
             });
         }

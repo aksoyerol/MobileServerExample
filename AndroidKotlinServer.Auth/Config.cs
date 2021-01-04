@@ -22,9 +22,16 @@ namespace AndroidKotlinServer.Auth
 
         public static IEnumerable<ApiResource> apiResources => new ApiResource[]
         {
-            new ApiResource("resource_product_api"){ Scopes={"api_product_fullpermission" } },
+            new ApiResource("resource_product_api"){ Scopes={"api_product_fullpermission" },
+                ApiSecrets=new[] {
+                    new Secret("apisecret".Sha256())
+                }
+                },
             new ApiResource("resource_photo_api"){Scopes={"api_photo_fullpermission"}},
-            new ApiResource("resource_auth_api"){Scopes={IdentityServerConstants.LocalApi.ScopeName}}
+            new ApiResource("resource_auth_api"){Scopes={IdentityServerConstants.LocalApi.ScopeName},
+            ApiSecrets = new[]{
+            new Secret("photosecret".Sha256())
+            } }
         };
 
         public static IEnumerable<ApiScope> ApiScopes =>
@@ -67,7 +74,7 @@ namespace AndroidKotlinServer.Auth
                         "api_photo_fullpermission",
                         IdentityServerConstants.StandardScopes.OfflineAccess
                     },
-                    AccessTokenLifetime=10*60,//10 dakikalık lifetime
+                    AccessTokenLifetime=1*60*60,//10 dakikalık lifetime 10*60
                     RefreshTokenUsage=TokenUsage.ReUse,
                     AbsoluteRefreshTokenLifetime=(int)(DateTime.Now.AddDays(60)-DateTime.Now).TotalSeconds,
                     RefreshTokenExpiration=TokenExpiration.Absolute //Kesin bir tarih ver ömrü var. İki aylık bir süre içersinde geçerli

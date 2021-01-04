@@ -47,6 +47,7 @@ namespace AndroidKotlinServer.Photo.API
             app.UseStaticFiles();
             if (env.IsDevelopment())
             {
+                app.UseDelayRequestDevelopment();
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "AndroidKotlinServer.Photo.API v1"));

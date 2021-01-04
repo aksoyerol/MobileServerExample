@@ -22,7 +22,7 @@ namespace AndroidKotlinServer.API.Controllers
 
         //Mutlaka geriye IQuaryble dönmeli !
         //odata/products endpointi üzerinden istek yapabileceğiz.
-        [EnableQuery]
+        [EnableQuery(PageSize = 5)]
         public IActionResult Get()
         {
             return Ok(_appDbContext.Products.AsQueryable());
@@ -31,7 +31,7 @@ namespace AndroidKotlinServer.API.Controllers
         //odata/products(id) ile işlem yapabilmek için odata'nın tanıyacağı
         //biçimde get func'ı overload yapıyoruz.
 
-        [EnableQuery(PageSize = 5)]
+        [EnableQuery]
         public IActionResult Get([FromODataUri] int key)
         {
             return Ok(_appDbContext.Products.Where(x => x.Id == key));

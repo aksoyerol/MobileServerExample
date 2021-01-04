@@ -1,5 +1,6 @@
 ﻿using AndroidKotlinServer.Auth.Dtos;
 using AndroidKotlinServer.Auth.Models;
+using AndroidKotlinServer.Shared.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -48,8 +49,13 @@ namespace AndroidKotlinServer.Auth.Controllers
             var result = await _userManager.CreateAsync(user, signUpViewModel.Password);
             if (!result.Succeeded)
             {
+                ErrorDto errorDto = new ErrorDto();
+                errorDto.StatusCode = 400;
+                errorDto.IsShow = true;
+                errorDto.Errors.AddRange(result.Errors.Select(x => x.Description).ToList());
+
                 //TO:DO hata mesajı
-                return BadRequest();
+                return BadRequest(errorDto);
             }
 
             return NoContent();

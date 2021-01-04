@@ -42,7 +42,13 @@ namespace AndroidKotlinServer.Auth
             services.AddDbContext<ApplicationDbContext>(options =>
             options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
-            services.AddIdentity<ApplicationUser, IdentityRole>()
+            services.AddIdentity<ApplicationUser, IdentityRole>(options =>
+            {
+                options.User.RequireUniqueEmail = true;
+                options.Password.RequireDigit = false;
+                options.Password.RequireLowercase = false;
+                options.Password.RequireNonAlphanumeric = false;
+            })
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
 
@@ -52,7 +58,7 @@ namespace AndroidKotlinServer.Auth
                 options.Events.RaiseInformationEvents = true;
                 options.Events.RaiseFailureEvents = true;
                 options.Events.RaiseSuccessEvents = true;
-
+                options.IssuerUri = "http://localhost:5001";
                 // see https://identityserver4.readthedocs.io/en/latest/topics/resources.html
                 options.EmitStaticAudienceClaim = true;
             })
@@ -82,6 +88,7 @@ namespace AndroidKotlinServer.Auth
         {
             if (Environment.IsDevelopment())
             {
+                app.UseDelayRequestDevelopment();
                 app.UseDeveloperExceptionPage();
                 app.UseDatabaseErrorPage();
             }
